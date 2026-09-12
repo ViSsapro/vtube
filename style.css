@@ -1,0 +1,125 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #0f0f0f;
+    color: #ffffff;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background-color: #202020;
+    border-bottom: 1px solid #333;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff0000;
+}
+
+button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #cc0000;
+}
+
+.main-container {
+    display: flex;
+    padding: 20px 5%;
+    gap: 20px;
+}
+
+.sidebar {
+    flex: 1;
+    background-color: #181818;
+    padding: 20px;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+.content {
+    flex: 3;
+}
+
+.upload-box {
+    background-color: #181818;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.upload-box input, .upload-box textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    background-color: #121212;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 4px;
+}
+
+.video-card {
+    background-color: #181818;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 25px;
+}
+
+.video-card video {
+    width: 100%;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.video-details {
+    margin-top: 10px;
+}
+
+.channel-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.comments-section {
+    margin-top: 15px;
+    border-top: 1px solid #333;
+    padding-top: 10px;
+}
+
+.comment-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.comment-input-group input {
+    flex: 1;
+    padding: 8px;
+    background: #121212;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.monetize-badge {
+    color: #00ff66;
+    font-weight: bold;
+}
