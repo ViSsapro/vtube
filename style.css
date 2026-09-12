@@ -39,6 +39,11 @@ button:hover {
     background-color: #cc0000;
 }
 
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
 .main-container {
     display: flex;
     padding: 20px 5%;
@@ -64,6 +69,13 @@ button:hover {
     margin-bottom: 25px;
 }
 
+.upload-box label {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #aaa;
+}
+
 .upload-box input, .upload-box textarea {
     width: 100%;
     margin-bottom: 12px;
@@ -72,6 +84,48 @@ button:hover {
     border: 1px solid #333;
     color: white;
     border-radius: 4px;
+}
+
+/* Spinner and Upload Progress */
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    padding: 15px;
+    background: #121212;
+    border-radius: 6px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #333;
+    border-top: 4px solid #ff0000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #ff0000;
+    transition: width 0.2s ease-in-out;
 }
 
 .video-card {
@@ -85,10 +139,7 @@ button:hover {
     width: 100%;
     border-radius: 6px;
     margin-top: 10px;
-}
-
-.video-details {
-    margin-top: 10px;
+    background-color: #000;
 }
 
 .channel-info {
