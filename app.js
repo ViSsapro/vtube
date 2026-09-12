@@ -36,7 +36,6 @@ auth.onAuthStateChanged(user => {
         document.getElementById('logoutBtn').style.display = 'inline-block';
         document.getElementById('uploadBox').style.display = 'block';
         
-        // Setup User in Database
         setupUserData(user);
     } else {
         currentUser = null;
@@ -48,7 +47,6 @@ auth.onAuthStateChanged(user => {
     loadVideos();
 });
 
-// Setup User Profile and Check Followers/Monetization
 function setupUserData(user) {
     const userRef = db.collection('users').doc(user.uid);
 
@@ -66,7 +64,6 @@ function setupUserData(user) {
     });
 }
 
-// Display Profile Details, Followers Count, and Monetization Button
 function renderUserProfile(userId) {
     db.collection('users').doc(userId).onSnapshot(doc => {
         if (!doc.exists) return;
@@ -91,51 +88,89 @@ function renderUserProfile(userId) {
     });
 }
 
-// Upload Video Function
-function uploadVideo() {
+// Upload Video & Thumbnail with Realtime Progress
+async function uploadVideo() {
     const title = document.getElementById('videoTitle').value;
     const desc = document.getElementById('videoDesc').value;
-    const file = document.getElementById('videoFile').files[0];
+    const videoFile = document.getElementById('videoFile').files[0];
+    const thumbnailFile = document.getElementById('thumbnailFile').files[0];
+    const uploadBtn = document.getElementById('uploadBtn');
+    
+    const progressContainer = document.getElementById('uploadProgressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
     const status = document.getElementById('uploadStatus');
 
-    if (!title || !file) {
-        alert('Please fill Title and select a Video!');
+    if (!title || !videoFile || !thumbnailFile) {
+        alert('Please fill in the title, select a video file, AND a thumbnail image!');
         return;
     }
 
-    status.innerText = "Uploading video... Please wait.";
+    // Disable button & Show Progress UI
+    uploadBtn.disabled = true;
+    progressContainer.style.display = 'flex';
+    status.innerText = '';
+    progressBar.style.width = '0%';
+    progressPercent.innerText = 'Uploading: 0%';
 
-    // Save File to Storage
-    const storageRef = storage.ref(`videos/${Date.now()}_${file.name}`);
-    const uploadTask = storageRef.put(file);
+    try {
+        // 1. Upload Thumbnail Image
+        const thumbRef = storage.ref(`thumbnails/${Date.now()}_${thumbnailFile.name}`);
+        const thumbSnapshot = await thumbRef.put(thumbnailFile);
+        const thumbnailUrl = await thumbSnapshot.ref.getDownloadURL();
 
-    uploadTask.on('state_changed', 
-        null,
-        error => { status.innerText = "Upload Failed: " + error.message; },
-        () => {
-            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-                // Save Video Details to Firestore
-                db.collection('videos').add({
+        // 2. Upload Video File with Live Progress Tracking
+        const videoRef = storage.ref(`videos/${Date.now()}_${videoFile.name}`);
+        const uploadTask = videoRef.put(videoFile);
+
+        uploadTask.on('state_changed', 
+            (snapshot) => {
+                // Progress Percentage Calculation
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                const roundedProgress = Math.round(progress);
+                
+                progressBar.style.width = roundedProgress + '%';
+                progressPercent.innerText = `Uploading Video: ${roundedProgress}%`;
+            },
+            (error) => {
+                status.innerText = "Upload Failed: " + error.message;
+                uploadBtn.disabled = false;
+                progressContainer.style.display = 'none';
+            },
+            async () => {
+                // 100% Upload Complete -> Save to Firestore Database
+                const videoUrl = await uploadTask.snapshot.ref.getDownloadURL();
+
+                await db.collection('videos').add({
                     title: title,
                     description: desc,
-                    videoUrl: downloadURL,
+                    videoUrl: videoUrl,
+                    thumbnailUrl: thumbnailUrl,
                     uploaderId: currentUser.uid,
                     uploaderName: currentUser.displayName,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     comments: []
-                }).then(() => {
-                    status.innerText = "Video Uploaded Successfully!";
-                    document.getElementById('videoTitle').value = '';
-                    document.getElementById('videoDesc').value = '';
-                    document.getElementById('videoFile').value = '';
-                    loadVideos();
                 });
-            });
-        }
-    );
+
+                status.innerText = "🎉 Video & Thumbnail Uploaded Successfully!";
+                uploadBtn.disabled = false;
+                progressContainer.style.display = 'none';
+
+                // Reset form fields
+                document.getElementById('videoTitle').value = '';
+                document.getElementById('videoDesc').value = '';
+                document.getElementById('videoFile').value = '';
+                document.getElementById('thumbnailFile').value = '';
+            }
+        );
+    } catch (err) {
+        status.innerText = "Error: " + err.message;
+        uploadBtn.disabled = false;
+        progressContainer.style.display = 'none';
+    }
 }
 
-// Load Videos Feed
+// Load Videos Feed with Thumbnail Support
 function loadVideos() {
     db.collection('videos').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
         const feed = document.getElementById('videoFeed');
@@ -149,7 +184,7 @@ function loadVideos() {
                 <div class="video-card">
                     <h3>${video.title}</h3>
                     <p>${video.description}</p>
-                    <video controls src="${video.videoUrl}"></video>
+                    <video controls poster="${video.thumbnailUrl || ''}" src="${video.videoUrl}"></video>
                     
                     <div class="channel-info">
                         <span>Uploaded by: <strong>${video.uploaderName}</strong></span>
