@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Sharing Platform</title>
+    <title>VidShare - Video Sharing Platform</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -36,8 +36,24 @@
                 <h3>Upload New Video</h3>
                 <input type="text" id="videoTitle" placeholder="Video Title" required>
                 <textarea id="videoDesc" placeholder="Video Description..." rows="3"></textarea>
+
+                <label>Select Video File:</label>
                 <input type="file" id="videoFile" accept="video/*" required>
-                <button onclick="uploadVideo()">Upload Video</button>
+
+                <label>Select Thumbnail Image:</label>
+                <input type="file" id="thumbnailFile" accept="image/*" required>
+
+                <button id="uploadBtn" onclick="uploadVideo()">Upload Video</button>
+
+                <!-- Loading Spinner & Progress Bar Overlay -->
+                <div id="uploadProgressContainer" class="progress-container" style="display:none;">
+                    <div class="spinner"></div>
+                    <p id="progressPercent">Uploading: 0%</p>
+                    <div class="progress-bar-bg">
+                        <div id="progressBar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+
                 <div id="uploadStatus"></div>
             </div>
 
