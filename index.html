@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Sharing Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="logo">VidShare</div>
+        <div id="authContainer">
+            <button id="loginBtn" onclick="loginWithGoogle()">Sign in with Google</button>
+            <span id="userInfo" style="display:none;"></span>
+            <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+
+        <!-- Left Sidebar: Profile & Monetization -->
+        <aside class="sidebar">
+            <h3>My Profile</h3>
+            <div id="profileSection">
+                <p>Please login first.</p>
+            </div>
+        </aside>
+
+        <!-- Center: Video Feed & Upload Section -->
+        <main class="content">
+
+            <!-- Video Upload Box -->
+            <div class="upload-box" id="uploadBox" style="display:none;">
+                <h3>Upload New Video</h3>
+                <input type="text" id="videoTitle" placeholder="Video Title" required>
+                <textarea id="videoDesc" placeholder="Video Description..." rows="3"></textarea>
+                <input type="file" id="videoFile" accept="video/*" required>
+                <button onclick="uploadVideo()">Upload Video</button>
+                <div id="uploadStatus"></div>
+            </div>
+
+            <!-- Feed Videos List -->
+            <h2>Trending Videos</h2>
+            <div id="videoFeed" class="video-feed">
+                <!-- Videos will load dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
